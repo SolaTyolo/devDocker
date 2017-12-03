@@ -1,5 +1,4 @@
-
-FROM centos:centos7
+FROM registry.cn-hangzhou.aliyuncs.com/solat/centos:centos7
 MAINTAINER solat <solat.yolo@gmail.com>
 #设置时间环境
 ENV TZ "Asia/Shanghai"
