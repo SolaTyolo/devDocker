@@ -1,16 +1,18 @@
 services:
     # mysql
     mysql:
-        build: ./mysql
+        #build 针对dockerfile
+        #build: ./mysql
+        image: mysql-server
         ports:
-            - "8306:3306"
+            - "3306:3306"
         environment:
             - MYSQL_DATABASE=mysql
             - MYSQL_USER=developer
             - MYSQL_PASSWORD=root
             - MYSQL_ROOT_PASSWORD=123456
-        volumes:
-            - /opt/data/mysql:/var/lib/mysql
+        #olumes:
+        #    - /opt/data/mysql:/var/lib/mysql
         restart: always
 
     # php-fpm
