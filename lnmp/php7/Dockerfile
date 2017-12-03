@@ -1,19 +1,19 @@
 
 FROM centos:centos7
 MAINTAINER solat <solat.yolo@gmail.com>
-
+#设置时间环境
 ENV TZ "Asia/Shanghai"
 
-#Dir
+
+#新建项目存放目录(挂载出来)
 RUN mkdir -p /usr/local/nginx/html
 
-#Yum
+#更新Yum
 RUN yum -y update && \
     yum install -y gcc automake autoconf libtool make gcc-c++ vixie-cron  wget zlib  file openssl-devel sharutils zip  bash vim cyrus-sasl-devel libmemcached libmemcached-devel libyaml libyaml-devel unzip libvpx-devel openssl-devel ImageMagick-devel  autoconf  tar gcc libxml2-devel gd-devel libmcrypt-devel libmcrypt mcrypt mhash libmcrypt libmcrypt-devel libxml2 libxml2-devel bzip2 bzip2-devel curl curl-devel libjpeg libjpeg-devel libpng libpng-devel freetype-devel bison libtool-ltdl-devel net-tools && \
     yum clean all
 
-#Php
-#fix error: mcrypt.h not found
+#安装Php7
 RUN rpm -ivh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm && \
     yum install -y libmcrypt-devel 
 
@@ -32,7 +32,14 @@ RUN cp /tmp/php-7.0.12/php.ini-production /usr/local/php/lib/php.ini && \
     cp /usr/local/php/etc/php-fpm.conf.default /usr/local/php/etc/php-fpm.conf && \
     cp /usr/local/php/etc/php-fpm.d/www.conf.default /usr/local/php/etc/php-fpm.d/www.conf
 
+#安装composer
+RUN curl -sS https://getcomposer.org/install | php \
+  && mv composer.phar /usr/local/bin/composer \
+  && /usr/local/bin/composer self-update \
+  && composer config -g repo.packagist composer https://packagist.phpcomposer.com \
+  && composer update
 
+#暴露端口
 EXPOSE 9000
 
 
