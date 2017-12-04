@@ -35,10 +35,9 @@ RUN cp /tmp/php-7.0.12/php.ini-production /usr/local/php/lib/php.ini && \
 RUN curl -sS https://getcomposer.org/installer | /usr/local/php/bin/php \
   && mv composer.phar /usr/local/bin/composer \
   && ln -s /usr/local/php/bin/php /usr/local/bin/php \
-  && /usr/local/bin/composer self-update \
-  && composer config -g repo.packagist composer https://packagist.phpcomposer.com \
+  && /usr/local/bin/composer self-update
 
-#暴露端口∂
+#暴露端口
 EXPOSE 9000
 
 
