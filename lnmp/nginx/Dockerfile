@@ -1,29 +1,23 @@
-FROM registry.cn-hangzhou.aliyuncs.com/solat/centos:centos7
+FROM daocloud.io/library/nginx:alpine
+
 MAINTAINER solat <solat.yolo@gmail.com>
 
-# 设置时间环境变量
-ENV TZ "Asia/Shanghai"
+#编译后静态文件
+#COPY . /usr/share/nginx/html
 
-#更新Yum 安装基本程序
-RUN yum -y update && \
-    yum install -y gcc automake autoconf libtool make gcc-c++ vixie-cron  wget zlib  file openssl-devel sharutils zip  bash vim cyrus-sasl-devel libmemcached libmemcached-devel libyaml libyaml-devel unzip libvpx-devel openssl-devel ImageMagick-devel  autoconf  tar gcc libxml2-devel gd-devel libmcrypt-devel libmcrypt mcrypt mhash libmcrypt libmcrypt-devel libxml2 libxml2-devel bzip2 bzip2-devel curl curl-devel libjpeg libjpeg-devel libpng libpng-devel freetype-devel bison libtool-ltdl-devel net-tools && \
-    yum clean all
+#ADD nginx.conf /etc/nginx/
 
-#安装Nginx
-RUN cd /tmp && \
-  wget http://nginx.org/download/nginx-1.11.5.tar.gz && \
-  tar xzf nginx-1.11.5.tar.gz && \
-  cd /tmp/nginx-1.11.5 && \
-  ./configure \
-    --prefix=/usr/local/nginx \
-    --with-http_ssl_module --with-http_sub_module --with-http_dav_module --with-http_flv_module \
-    --with-http_gzip_static_module --with-http_stub_status_module --with-debug && \
-    make && \
-    make install
+RUN apk update \
+    && apk upgrade \
+    && apk add --no-cache bash \
 
-RUN sed -i -e "s@# deny access to .htaccess files, if Apache@${HTTP_PHP_CONFIG}# deny access to .htaccess files, if Apache@" /usr/local/nginx/conf/nginx.conf
+ARG PHP_UPSTREAM_CONTAINER=php-fpm
+ARG PHP_UPSTREAM_PORT=9000
+
+# Set upstream conf and remove the default conf
+RUN echo "upstream php-upstream { server ${PHP_UPSTREAM_CONTAINER}:${PHP_UPSTREAM_PORT}; }" > /etc/nginx/conf.d/upstream.conf \
+    && rm /etc/nginx/conf.d/default.conf
+
+CMD ["nginx"]
 
 EXPOSE 80 443
-
-#启动nginx
-ENTRYPOINT ["/usr/local/nginx/sbin/nginx","-g","daemon off;"]
