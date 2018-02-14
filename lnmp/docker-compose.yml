@@ -1,5 +1,14 @@
 version: '2'
 services:
+
+    data:
+        build: ./data
+        volumes: 
+            - ${WEB_APPLICATION}:/data:rw
+        tty: true
+        networks:
+            - backend
+
     # mysql
     mysql:
         build: 
@@ -31,19 +40,35 @@ services:
             - backend
 
     php-fpm:
-      build:
-        context: ./php-fpm
-      volumes:
-        #项目目录
-        - ${WEB_APPLICATION}:/var/www
-        - ${DATA_SAVE_PATH}/php/php.ini:/usr/local/etc/php/php.ini:ro
-      expose:
-        - "9000"
-      depends_on:
-        - mysql
-        - redis
-      networks:
-        - backend
+        build: ./php-fpm
+        #image: php-fpm
+        volumes_from:
+            - data
+        volumes:
+            - ${DATA_SAVE_PATH}/php/php.ini:/usr/local/etc/php/php.ini:ro
+        expose:
+            - "9000"
+        depends_on:
+            - mysql
+            - redis
+        networks:
+            - backend
+
+    php-composer:
+        build: ./php-composer
+        volumes_from:
+            - data
+        # privileged: true
+        # networks:
+        #     - backend
+
+    php-artisan:
+        build: ./php-artisan
+        volumes_from:
+            - data
+        #privileged: true
+        #networks:
+        #    - backend
 
     # web
     nginx:
@@ -58,13 +83,13 @@ services:
             - "${NGINX_HOST_HTTPS_PORT}:443"
         depends_on:
             - php-fpm
+        volumes_from:
+            - data
         volumes:
             #server配置
             - ${NGINX_SITES_PATH}:/etc/nginx/sites-available
             #日志
             - ${NGINX_HOST_LOG_PATH}:/var/log/nginx:ro
-            #项目目录
-            - ${WEB_APPLICATION}:/var/www
         networks:
             - frontend
             - backend

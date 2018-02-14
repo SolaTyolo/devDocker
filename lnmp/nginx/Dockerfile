@@ -4,8 +4,8 @@ MAINTAINER solat <solat.yolo@gmail.com>
 
 #编译后静态文件
 #COPY . /usr/share/nginx/html
-
-#ADD nginx.conf /etc/nginx/
+#复制配置文件
+#ADD nginx.conf /etc/nginx/nginx.conf
 
 RUN apk update \
     && apk upgrade \
@@ -18,6 +18,8 @@ ARG PHP_UPSTREAM_PORT=9000
 RUN echo "upstream php-upstream { server ${PHP_UPSTREAM_CONTAINER}:${PHP_UPSTREAM_PORT}; }" > /etc/nginx/conf.d/upstream.conf \
     && rm /etc/nginx/conf.d/default.conf
 
-CMD ["nginx"]
+RUN mkdir -p /data
+VOLUME ["/data"]
 
-EXPOSE 80 443
+EXPOSE 80 
+EXPOSE 443

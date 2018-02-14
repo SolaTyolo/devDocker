@@ -1,19 +1,18 @@
 ARG PHP_VERSION=7.1
-FROM daocloud.io/library/php:${PHP_VERSION}-fpm
+FROM daocloud.io/library/php:${PHP_VERSION}-cli
 
 MAINTAINER solat <solat.yolo@gmail.com>
 
 RUN apt-get update && apt-get install -y libmcrypt-dev
 RUN docker-php-exit-install mbstring mcrypt pdo pdo_mysql
 
-#WORKDIR /var/www
-
-RUN mkdir -p /data
+RUN mkdir -p /data/www
 
 VOLUME ["/data"]
 
-#COPY php.ini /usr/local/etc/php/
+WORKDIR /data/www
 
-CMD ["php-fpm"]
+ENTRYPOINT ["php","artisan"]
 
-EXPOSE 9000
+CMD ["env"]
+
