@@ -4,7 +4,7 @@ FROM daocloud.io/library/php:${PHP_VERSION}-cli
 MAINTAINER solat <solat.yolo@gmail.com>
 
 RUN apt-get update && apt-get install -y libmcrypt-dev
-RUN docker-php-exit-install mbstring mcrypt pdo pdo_mysql
+RUN docker-php-ext-install mbstring mcrypt pdo pdo_mysql
 
 RUN mkdir -p /data/www
 

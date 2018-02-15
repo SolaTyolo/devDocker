@@ -3,8 +3,13 @@ FROM daocloud.io/library/php:${PHP_VERSION}-fpm
 
 MAINTAINER solat <solat.yolo@gmail.com>
 
+ENV TIME_ZONE Asia/Shanghai
+
 RUN apt-get update && apt-get install -y libmcrypt-dev
-RUN docker-php-exit-install mbstring mcrypt pdo pdo_mysql
+RUN docker-php-ext-install mbstring mcrypt pdo pdo_mysql
+RUN echo "${TIME_ZONE}" > /etc/timezone 
+RUN rm -rf /etc/localtime 
+RUN ln -sf /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime
 
 #WORKDIR /var/www
 

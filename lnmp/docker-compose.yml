@@ -25,7 +25,7 @@ services:
             - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
         volumes:
             #数据库的数据持久化到磁盘
-            - ${DATA_SAVE_PATH}/mysql:/var/lib/mysql:ro
+            - ${DATA_SAVE_PATH}/mysql:/var/lib/mysql
         networks:
             - backend
 
@@ -51,24 +51,11 @@ services:
         depends_on:
             - mysql
             - redis
+        links:
+            - mysql:db;
+            - redis:redis
         networks:
             - backend
-
-    php-composer:
-        build: ./php-composer
-        volumes_from:
-            - data
-        # privileged: true
-        # networks:
-        #     - backend
-
-    php-artisan:
-        build: ./php-artisan
-        volumes_from:
-            - data
-        #privileged: true
-        #networks:
-        #    - backend
 
     # web
     nginx:
@@ -83,13 +70,15 @@ services:
             - "${NGINX_HOST_HTTPS_PORT}:443"
         depends_on:
             - php-fpm
+        links:
+            - php-fpm:php
         volumes_from:
             - data
         volumes:
             #server配置
             - ${NGINX_SITES_PATH}:/etc/nginx/sites-available
             #日志
-            - ${NGINX_HOST_LOG_PATH}:/var/log/nginx:ro
+            - ${NGINX_HOST_LOG_PATH}:/var/log/nginx
         networks:
             - frontend
             - backend
