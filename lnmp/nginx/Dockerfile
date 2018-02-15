@@ -8,11 +8,11 @@ ENV TIME_ZONE Asia/Shanghai
 #编译后静态文件
 #COPY . /usr/share/nginx/html
 #复制配置文件
-#ADD nginx.conf /etc/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 
-#RUN apk update
-#RUN apk upgrade
-#RUN apk add --no-cache bash
+RUN apk update
+RUN apk upgrade
+RUN apk add --no-cache bash
 RUN echo "${TIME_ZONE}" > /etc/timezone 
 RUN rm -rf /etc/localtime 
 RUN ln -sf /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime

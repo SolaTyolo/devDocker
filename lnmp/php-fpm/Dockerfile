@@ -17,8 +17,4 @@ RUN mkdir -p /data
 
 VOLUME ["/data"]
 
-#COPY php.ini /usr/local/etc/php/
-
-CMD ["php-fpm"]
-
-EXPOSE 9000
+COPY php.ini /usr/local/etc/php/
