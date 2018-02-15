@@ -46,8 +46,8 @@ services:
             - data
         volumes:
             - ${DATA_SAVE_PATH}/php/php.ini:/usr/local/etc/php/php.ini:ro
-        expose:
-            - "9000"
+        ports:
+            - "${NGINX_PHP_UPSTREAM_PORT}:9000"
         depends_on:
             - mysql
             - redis
