@@ -5,16 +5,19 @@ MAINTAINER solat <solat.yolo@gmail.com>
 
 ENV TIME_ZONE Asia/Shanghai
 
-RUN apt-get update && apt-get install -y libmcrypt-dev
-RUN docker-php-ext-install mbstring mcrypt pdo pdo_mysql
+RUN apt-get update && apt-get install -y libmcrypt-dev \
+	&&	docker-php-ext-install mbstring mcrypt pdo_mysql
+
 RUN echo "${TIME_ZONE}" > /etc/timezone 
 RUN rm -rf /etc/localtime 
 RUN ln -sf /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime
 
-#WORKDIR /var/www
+ADD php.ini /usr/local/etc/php/conf.d
+ADD site.pool.conf /usr/local/etc/php-fpm.d
 
-RUN mkdir -p /data
+RUN rm -rf /var/lib/apt/lists/* \
+	&& usermod -u 1000 www-data
 
-VOLUME ["/data"]
+WORKDIR /var/www
 
-COPY php.ini /usr/local/etc/php/
+

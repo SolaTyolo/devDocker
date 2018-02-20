@@ -5,27 +5,23 @@ MAINTAINER solat <solat.yolo@gmail.com>
 #设置时区
 ENV TIME_ZONE Asia/Shanghai
 
-#编译后静态文件
-#COPY . /usr/share/nginx/html
 #复制配置文件
-COPY nginx.conf /etc/nginx/nginx.conf
-
-RUN apk update
-RUN apk upgrade
-RUN apk add --no-cache bash
-RUN echo "${TIME_ZONE}" > /etc/timezone 
-RUN rm -rf /etc/localtime 
-RUN ln -sf /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime
+ADD nginx.conf /etc/nginx/
 
 ARG PHP_UPSTREAM_CONTAINER=php-fpm
 ARG PHP_UPSTREAM_PORT=9000
 
-# Set upstream conf and remove the default conf
-RUN echo "upstream php-upstream { server ${PHP_UPSTREAM_CONTAINER}:${PHP_UPSTREAM_PORT}; }" > /etc/nginx/conf.d/upstream.conf \
-    && rm /etc/nginx/conf.d/default.conf
+#将源换至aliyun
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/' /etc/apk/repositories
 
-RUN mkdir -p /data
-VOLUME ["/data"]
+RUN apk update \
+	&&	upgrade \
+	&& 	add --no-cache bash \
+	&&	echo "${TIME_ZONE}" > /etc/timezone \
+	&&	rm -rf /etc/localtime \ 
+	&&	ln -sf /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime \
+	&& 	adduser -D -H -u 1000 -s /bin/bash www-data \
+	&&	echo "upstream php-upstream { server ${PHP_UPSTREAM_CONTAINER}:${PHP_UPSTREAM_PORT}; }" > /etc/nginx/conf.d/upstream.conf \
+	&&	rm /etc/nginx/conf.d/default.conf
 
-EXPOSE 80 
 EXPOSE 443

@@ -9,10 +9,3 @@ RUN ln -sf /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime
 
 #配置文件
 #COPY redis.conf /usr/local/etc/redis/redis.conf
-
-#将数据持久化到/data
-VOLUME /data
-
-EXPOSE 6379
-
-CMD ["redis-server"]

@@ -2,19 +2,20 @@ version: '2'
 services:
 
     data:
-        build: ./data
+        image: tianon/true
         volumes: 
-            - ${WEB_APPLICATION}:/data:rw
-        tty: true
+            - ${WEB_APPLICATION}:/var/www
         networks:
             - backend
+            - frontend
 
     # mysql
     mysql:
         build: 
-          context: ./mysql
-          args:
+            context: ./mysql
+            args:
               - MYSQL_VERSION=${MYSQL_VERSION}
+            dockerfile: "Dockerfile"
         #image: mysql
         ports:
             - "${MYSQL_PORT}:3306"
@@ -26,6 +27,7 @@ services:
         volumes:
             #数据库的数据持久化到磁盘
             - ${DATA_SAVE_PATH}/mysql:/var/lib/mysql
+            - ${MYSQL_CONF}:/etc/mysql/conf.d/my.cnf
         networks:
             - backend
 
@@ -39,21 +41,36 @@ services:
         networks:
             - backend
 
-    php-fpm:
-        build: ./php-fpm
-        #image: php-fpm
+    php-composer: 
+        build: ./php-composer
+        volumes_from:
+            - data
+        networks:
+            - backend
+
+    php-cli:
+        build: ./php-cli
         volumes_from:
             - data
         volumes:
-            - ${DATA_SAVE_PATH}/php/php.ini:/usr/local/etc/php/php.ini:ro
+            - ${PHP_SUPERVISORD_CONF}:/etc/supervisord.conf
+        tty: true
+        networks:
+            - backend
+
+    php-fpm:
+        build: ./php-fpm
+        volumes_from:
+            - data
+        volumes:
+            - ${PHP_FPM_INI_CONF}:/usr/local/etc/php/conf.d/site.ini
+            - ${PHP_FPM_POOL_CONF}:/usr/local/etc/php-fpm.d/site.pool.ini
         ports:
             - "${NGINX_PHP_UPSTREAM_PORT}:9000"
-        depends_on:
-            - mysql
-            - redis
         links:
-            - mysql:db;
+            - mysql:mysql;
             - redis:redis
+            - php-cli
         networks:
             - backend
 
@@ -68,10 +85,8 @@ services:
         ports:
             - "${NGINX_HOST_HTTP_PORT}:80"
             - "${NGINX_HOST_HTTPS_PORT}:443"
-        depends_on:
-            - php-fpm
         links:
-            - php-fpm:php
+            - php-fpm:php-fpm
         volumes_from:
             - data
         volumes:
@@ -79,6 +94,7 @@ services:
             - ${NGINX_SITES_PATH}:/etc/nginx/sites-available
             #日志
             - ${NGINX_HOST_LOG_PATH}:/var/log/nginx
+            - ${NGINX_CONF}:/etc/nginx/nginx.conf
         networks:
             - frontend
             - backend
@@ -88,3 +104,9 @@ networks:
         driver: "bridge"
     backend:
         driver: "bridge"
+
+volumes:
+    mysql:
+        driver: "local"
+    redis:
+        driver: "local"
