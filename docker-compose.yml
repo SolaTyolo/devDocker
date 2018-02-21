@@ -70,7 +70,7 @@ services:
         links:
             - mysql:mysql;
             - redis:redis
-            - php-cli
+            - php-cli:php-cli
         networks:
             - backend
 

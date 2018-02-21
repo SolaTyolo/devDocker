@@ -3,14 +3,12 @@ FROM daocloud.io/library/php:${PHP_VERSION}-cli
 
 MAINTAINER solat <solat.yolo@gmail.com>
 
-RUN apt-get update; \
-	&&	apt-get install -y wget git build-base libmcrypt-dev cyrus-sasl-dev libgsasl-dev supervisor
+RUN apt-get update 
+RUN apt-get install -y wget git libmcrypt-dev supervisor
 
-RUN docker-php-ext-install mysqli mbstring pdo pdo_mysql mcrypt tokenizer xml
-RUN pecl channel-update pecl.php.net && pecl install memcached && docker-php-ext-enable memcached
+RUN docker-php-ext-install mysqli mbstring pdo pdo_mysql mcrypt tokenizer
 
-RUN rm /var/cache/apk/* \
-    && mkdir -p /var/www
+RUN mkdir -p /var/www
 
 #supervisor配置
 COPY supervisord.conf /etc/supervisord.conf
