@@ -45,6 +45,7 @@ services:
         build: ./php-composer
         volumes_from:
             - data
+        tty: true
         networks:
             - backend
 
@@ -68,9 +69,9 @@ services:
         ports:
             - "${NGINX_PHP_UPSTREAM_PORT}:9000"
         links:
-            - mysql:mysql;
             - redis:redis
-            - php-cli:php-cli
+            - php-cli:cli
+            - php-composer:composer
         networks:
             - backend
 

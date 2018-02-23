@@ -5,8 +5,20 @@ MAINTAINER solat <solat.yolo@gmail.com>
 
 ENV TIME_ZONE Asia/Shanghai
 
-RUN apt-get update && apt-get install -y libmcrypt-dev \
-	&&	docker-php-ext-install mbstring mcrypt pdo_mysql
+RUN apt-get update \
+&& apt-get install -y libmcrypt-dev \
+		libz-dev \
+    	libpq-dev \
+    	libjpeg-dev \
+    	libpng12-dev \
+    	libfreetype6-dev \
+    &&  rm -rf /var/lib/apt/lists/* \
+	&&	docker-php-ext-install mbstring mcrypt pdo_mysql \
+	&&  docker-php-ext-configure gd \
+    	--enable-gd-native-ttf \
+    	--with-jpeg-dir=/usr/lib \
+    	--with-freetype-dir=/usr/include/freetype2 \
+    &&  docker-php-ext-install gd
 
 RUN echo "${TIME_ZONE}" > /etc/timezone 
 RUN rm -rf /etc/localtime 

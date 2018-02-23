@@ -18,11 +18,12 @@ RUN apk update \
 	upgrade \
 	add --no-cache bash \
 	echo "${TIME_ZONE}" > /etc/timezone \
-	rm -rf /etc/localtime \ 
-	ln -sf /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime \
-	echo "upstream php-upstream { server ${PHP_UPSTREAM_CONTAINER}:${PHP_UPSTREAM_PORT}; }" > /etc/nginx/conf.d/upstream.conf \
+	rm -f /etc/localtime \ 
+	ln -f /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime \
 	rm /etc/nginx/conf.d/default.conf
 
 RUN adduser -D -H -u 1000 -s /bin/bash www-data
 
-EXPOSE 443
+EXPOSE 80 443
+
+CMD ["nginx"]
