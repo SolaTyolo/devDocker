@@ -6,6 +6,7 @@ MAINTAINER solat <solat.yolo@gmail.com>
 ENV TIME_ZONE Asia/Shanghai
 
 RUN apt-get update \
+&& apt-get install -y lsof \
 && apt-get install -y libmcrypt-dev \
 		libz-dev \
     	libpq-dev \

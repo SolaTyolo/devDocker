@@ -70,8 +70,8 @@ services:
             - "${NGINX_PHP_UPSTREAM_PORT}:9000"
         links:
             - redis:redis
-            - php-cli:cli
-            - php-composer:composer
+            - php-cli
+            - php-composer
         networks:
             - backend
 
@@ -88,6 +88,7 @@ services:
             - "${NGINX_HOST_HTTPS_PORT}:443"
         links:
             - php-fpm:php-fpm
+            - redis:redis
         volumes_from:
             - data
         volumes:
