@@ -8,17 +8,17 @@ ENV TIME_ZONE Asia/Shanghai
 RUN apt-get update \
 && apt-get install -y lsof \
 && apt-get install -y libmcrypt-dev \
-		libz-dev \
-    	libpq-dev \
-    	libjpeg-dev \
-    	libpng12-dev \
-    	libfreetype6-dev \
+        libz-dev \
+        libpq-dev \
+        libjpeg-dev \
+        libpng12-dev \
+        libfreetype6-dev \
     &&  rm -rf /var/lib/apt/lists/* \
-	&&	docker-php-ext-install mbstring mcrypt pdo_mysql \
-	&&  docker-php-ext-configure gd \
-    	--enable-gd-native-ttf \
-    	--with-jpeg-dir=/usr/lib \
-    	--with-freetype-dir=/usr/include/freetype2 \
+    &&  docker-php-ext-install mbstring mcrypt pdo_mysql \
+    &&  docker-php-ext-configure gd \
+        --enable-gd-native-ttf \
+        --with-jpeg-dir=/usr/lib \
+        --with-freetype-dir=/usr/include/freetype2 \
     &&  docker-php-ext-install gd
 
 RUN echo "${TIME_ZONE}" > /etc/timezone 
@@ -29,7 +29,7 @@ ADD php.ini /usr/local/etc/php/conf.d
 ADD site.pool.conf /usr/local/etc/php-fpm.d
 
 RUN rm -rf /var/lib/apt/lists/* \
-	&& usermod -u 1000 www-data
+    && usermod -u 1000 www-data
 
 WORKDIR /var/www
 
