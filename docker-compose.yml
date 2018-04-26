@@ -71,7 +71,6 @@ services:
         links:
             - redis:redis
             - php-cli
-            - php-composer
         networks:
             - backend
 
@@ -106,9 +105,3 @@ networks:
         driver: "bridge"
     backend:
         driver: "bridge"
-
-volumes:
-    mysql:
-        driver: "local"
-    redis:
-        driver: "local"
