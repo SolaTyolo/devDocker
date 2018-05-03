@@ -74,6 +74,21 @@ services:
         networks:
             - backend
 
+    php-swoole:
+        build: ./php-swoole
+        volumes_from:
+            - data
+        volumes:
+            - ${PHP_SWOOLE_INI_CONF}:/usr/local/etc/php/conf.d/site.ini
+            - ${PHP_SWOOLE_POOL_CONF}:/usr/local/etc/php-fpm.d/site.pool.ini
+        ports:
+            - "${NGINX_PHP_SWOOLE_UPSTREAM_PORT}:5200"
+        links:
+            - redis:redis
+            - php-cli
+        networks:
+            - backend
+
     # web
     nginx:
         build:
@@ -96,6 +111,31 @@ services:
             #日志
             - ${NGINX_HOST_LOG_PATH}:/var/log/nginx
             - ${NGINX_CONF}:/etc/nginx/nginx.conf
+        networks:
+            - frontend
+            - backend
+
+    nginx-swoole:
+        build:
+            context: ./nginx
+            args:
+                - PHP_UPSTREAM_CONTAINER=${NGINX_PHP_UPSTREAM_CONTAINER}
+                - PHP_UPSTREAM_PORT=${NGINX_PHP_UPSTREAM_PORT}
+        #image: nginx-swoole-server
+        ports:
+            - "${NGINX_HOST_HTTP_PORT}:80"
+            - "${NGINX_HOST_HTTPS_PORT}:443"
+        links:
+            - php-swoole:php-swoole
+            - redis:redis
+        volumes_from:
+            - data
+        volumes:
+            #server配置
+            - ${NGINX_SWOOLE_SITES_PATH}:/etc/nginx/sites-available
+            #日志
+            - ${NGINX_SWOOLE_HOST_LOG_PATH}:/var/log/nginx
+            - ${NGINX_SWOOLE_CONF}:/etc/nginx/nginx.conf
         networks:
             - frontend
             - backend
