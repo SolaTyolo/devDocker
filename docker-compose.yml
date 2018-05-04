@@ -80,12 +80,9 @@ services:
             - data
         volumes:
             - ${PHP_SWOOLE_INI_CONF}:/usr/local/etc/php/conf.d/site.ini
-            - ${PHP_SWOOLE_POOL_CONF}:/usr/local/etc/php-fpm.d/site.pool.ini
         ports:
             - "${NGINX_PHP_SWOOLE_UPSTREAM_PORT}:5200"
-        links:
-            - redis:redis
-            - php-cli
+        tty: true
         networks:
             - backend
 
