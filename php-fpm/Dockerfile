@@ -21,6 +21,15 @@ RUN apt-get update \
         --with-freetype-dir=/usr/include/freetype2 \
     &&  docker-php-ext-install gd
 
+###install-swoole
+ARG INSTALL_SWOOLE=False
+#添加swoole
+RUN if [ ${INSTALL_SWOOLE} = True ]; then \
+    pecl install swoole \
+    && docker-php-ext-enable swoole \
+;fi
+
+
 RUN echo "${TIME_ZONE}" > /etc/timezone 
 RUN rm -rf /etc/localtime 
 RUN ln -sf /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime
