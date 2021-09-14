@@ -9,7 +9,7 @@ RUN apt-get install -y lsof \
         libz-dev \
         libpq-dev \
         libjpeg-dev \
-        libpng12-dev \
+        libpng-dev \
         libfreetype6-dev \
         supervisor \
         wget \
