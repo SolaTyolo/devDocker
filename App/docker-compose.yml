@@ -1,0 +1,47 @@
+version: "3.2"
+
+services:
+    php-composer: 
+        build: ./php-composer
+        volumes_from:
+            - data
+        tty: true
+        networks:
+            - backend
+
+    php-cli:
+        build: ./php-cli
+        volumes_from:
+            - data
+        volumes:
+            - ${PHP_SUPERVISORD_CONF}:/etc/supervisord.conf
+        tty: true
+        networks:
+            - backend
+
+    phpserver:
+        build: 
+            context: ./php-fpm
+            args: 
+                - INSTALL_SWOOLE=${INSTALL_SWOOLE}
+        volumes_from:
+            - data
+        volumes:
+            - ${PHP_FPM_INI_CONF}:/usr/local/etc/php/conf.d/site.ini
+            - ${PHP_FPM_POOL_CONF}:/usr/local/etc/php-fpm.d/site.pool.ini
+        ports:
+            - "${NGINX_PHP_UPSTREAM_PORT}:9000"
+        links:
+            - redis:redis
+            - php-cli
+        networks:
+            - backend
+
+volumes:
+    esdata:
+        driver: local
+
+networks:
+    backend:
+        external: 
+            name: "backend"
