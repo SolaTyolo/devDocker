@@ -1,0 +1,44 @@
+version: "3.2"
+
+services:
+    composer: 
+        build:
+            context: ./composer
+            args:
+                - COMPOSER_PUID=${COMPOSER_PUID}
+                - COMPOSER_PGID=${COMPOSER_PGID}
+            dockerfile: "Dockerfile"
+        volumes:
+            - ${APPLICATION_HOME}:/app
+            - ${SSH_CONFIG}:/home/composer/.ssh
+            - composecache:/tmp
+        tty: true
+        networks: 
+            - backend
+
+    phpserver:
+        build: 
+            context: ./php-dev
+            args: 
+                - PHP_VERSION=${PHP_VERSION}
+                - INSTALL_GRPC=${INSTALL_GRPC}
+                - INSTALL_REDIS=${INSTALL_REDIS}
+                - INSTALL_GD=${INSTALL_GD}
+                - INSTALL_XDEBUG=${INSTALL_XDEBUG}
+                - XDEBUG_VERSION=${XDEBUG_VERSION}
+                - REDIS_VERSION=${REDIS_VERSION}
+                - USE_CHINA_PROXY=${USE_CHINA_PROXY}
+        volumes:
+            - ${APPLICATION_HOME}:/var/www
+            - ${SSH_CONFIG}:/root/.ssh
+        networks:
+            - backend
+
+volumes:
+    composecache:
+        driver: local
+
+networks:
+    backend:
+        external: 
+            name: "backend"
