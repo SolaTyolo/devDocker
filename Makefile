@@ -16,3 +16,7 @@ clean:
 	@echo clean all
 	docker network rm backend
 	docker network rm frontend
+
+devPhp:
+	@echo php environment dev
+     

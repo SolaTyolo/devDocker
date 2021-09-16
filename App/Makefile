@@ -4,16 +4,20 @@ MAKEFLAGS+=-r
 .DEFAULT: default
 
 
-default: 
-	@echo run kibana and es
-	docker-compose up -d  kibana
+composerInstall:
+	@echo composer php deps install
+	docker-compose run --rm composer install
 
-dev:
-	@echo run adminer and $(DB)
-	docker-compose up -d nginx $(DB)
+composerUpdate:
+	@echo composer php deps update
+	docker-compose run --rm composer update
+
+default: 
+	@echo run php web service
+	docker-compose up -d  phpserver
+
 
 .PHONY: clean build
-
 
 build: 
 	@echo build all image...

@@ -1,44 +1,41 @@
 version: "3.2"
 
 services:
-    php-composer: 
-        build: ./php-composer
-        volumes_from:
-            - data
-        tty: true
-        networks:
-            - backend
-
-    php-cli:
-        build: ./php-cli
-        volumes_from:
-            - data
+    composer: 
+        build:
+            context: ./composer
+            args:
+                - COMPOSER_PUID=${COMPOSER_PUID}
+                - COMPOSER_PGID=${COMPOSER_PGID}
+            dockerfile: "Dockerfile"
         volumes:
-            - ${PHP_SUPERVISORD_CONF}:/etc/supervisord.conf
+            - ${APPLICATION_HOME}:/app
+            - ${SSH_CONFIG}:/home/composer/.ssh
+            - composecache:/tmp
         tty: true
-        networks:
+        networks: 
             - backend
 
     phpserver:
         build: 
-            context: ./php-fpm
+            context: ./php-dev
             args: 
-                - INSTALL_SWOOLE=${INSTALL_SWOOLE}
-        volumes_from:
-            - data
+                - PHP_VERSION=${PHP_VERSION}
+                - INSTALL_GRPC=${INSTALL_GRPC}
+                - INSTALL_REDIS=${INSTALL_REDIS}
+                - INSTALL_GD=${INSTALL_GD}
+                - INSTALL_XDEBUG=${INSTALL_XDEBUG}
+                - XDEBUG_VERSION=${XDEBUG_VERSION}
+                - REDIS_VERSION=${REDIS_VERSION}
+                - USE_CHINA_PROXY=${USE_CHINA_PROXY}
         volumes:
-            - ${PHP_FPM_INI_CONF}:/usr/local/etc/php/conf.d/site.ini
-            - ${PHP_FPM_POOL_CONF}:/usr/local/etc/php-fpm.d/site.pool.ini
-        ports:
-            - "${NGINX_PHP_UPSTREAM_PORT}:9000"
-        links:
-            - redis:redis
-            - php-cli
+            - ${APPLICATION_HOME}:/var/www
+            - ${SSH_CONFIG}:/root/.ssh
         networks:
             - backend
 
 volumes:
-    esdata:
+    composecache:
         driver: local
 
 networks:
