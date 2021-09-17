@@ -5,8 +5,7 @@ MAKEFLAGS+=-r
 
 default: 
 	@echo run php web service
-	docker-compose up -d  app
-
+	docker-compose run --rm  app sh
 
 .PHONY: clean build
 
