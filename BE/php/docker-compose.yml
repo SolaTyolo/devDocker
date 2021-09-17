@@ -16,9 +16,9 @@ services:
         networks: 
             - backend
 
-    phpserver:
+    app:
         build: 
-            context: ./php-dev
+            context: ./app
             args: 
                 - PHP_VERSION=${PHP_VERSION}
                 - INSTALL_GRPC=${INSTALL_GRPC}
