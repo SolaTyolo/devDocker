@@ -5,6 +5,8 @@ FROM python:${PYTHON_VERSION}-alpine
 ARG USE_CHINA_PROXY=False
 RUN if [ ${USE_CHINA_PROXY} = True ]; then \
    sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
+   && pip config set global.index-url http://mirrors.aliyun.com/pypi/simple \
+   && pip config set install.trusted-host mirrors.aliyun.com \
 ;fi
 
 ### install php base extension

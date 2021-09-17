@@ -5,6 +5,7 @@ FROM node:${NODE_VERSION}-alpine
 ARG USE_CHINA_PROXY=False
 RUN if [ ${USE_CHINA_PROXY} = True ]; then \
    sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
+   && npm config set registry https://registry.npm.taobao.org \
 ;fi
 
 ### install php base extension
