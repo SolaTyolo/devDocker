@@ -8,7 +8,7 @@ services:
                 - GO_VERSION=${GO_VERSION}
                 - USE_CHINA_PROXY=${USE_CHINA_PROXY}
         volumes:
-            - ${APPLICATION_HOME}:/var/www
+            - ${APPLICATION_HOME}:/go/src
             - ${SSH_CONFIG}:/root/.ssh
         networks:
             - backend

@@ -16,6 +16,6 @@ RUN apk add bash  git openssh \
 # clean cache
 RUN rm /var/cache/apk/*
 
-WORKDIR /var/www
+WORKDIR /go/src
 
 
