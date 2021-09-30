@@ -7,6 +7,7 @@ services:
             args:
                 - COMPOSER_PUID=${COMPOSER_PUID}
                 - COMPOSER_PGID=${COMPOSER_PGID}
+                - USE_CHINA_PROXY=${USE_CHINA_PROXY}
             dockerfile: "Dockerfile"
         volumes:
             - ${APPLICATION_HOME}:/app
