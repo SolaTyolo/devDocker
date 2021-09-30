@@ -1,22 +1,6 @@
 version: "3.2"
 
 services:
-    composer: 
-        build:
-            context: ./composer
-            args:
-                - COMPOSER_PUID=${COMPOSER_PUID}
-                - COMPOSER_PGID=${COMPOSER_PGID}
-                - USE_CHINA_PROXY=${USE_CHINA_PROXY}
-            dockerfile: "Dockerfile"
-        volumes:
-            - ${APPLICATION_HOME}:/app
-            - ${SSH_CONFIG}:/home/composer/.ssh
-            - composecache:/tmp
-        tty: true
-        networks: 
-            - backend
-
     app:
         build: 
             context: ./app
@@ -32,6 +16,7 @@ services:
         volumes:
             - ${APPLICATION_HOME}:/var/www
             - ${SSH_CONFIG}:/root/.ssh
+            - composecache:/tmp
         networks:
             - backend
 

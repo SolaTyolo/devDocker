@@ -15,6 +15,16 @@ RUN apk add bash  git openssh \
         linux-headers \  
     &&  docker-php-ext-install mbstring pdo pdo_mysql mysqli opcache tokenizer 
 
+### install composer
+RUN php -r "copy('https://install.phpcomposer.com/installer', 'composer-setup.php');"
+RUN  php composer-setup.php \
+     php -r "unlink('composer-setup.php');"
+
+ARG COMPOSER_PUID=1000
+ARG COMPOSER_PGID=1000
+
+RUN addgroup -g ${COMPOSER_PGID} composer
+RUN adduser -u ${COMPOSER_PUID} -D -G composer composer
 
 ### install gd
 ARG INSTALL_GD=False
@@ -63,6 +73,8 @@ ADD site.pool.conf /usr/local/etc/php-fpm.d
 
 # clean cache
 RUN rm /var/cache/apk/*
+
+USER composer
 
 WORKDIR /var/www
 
