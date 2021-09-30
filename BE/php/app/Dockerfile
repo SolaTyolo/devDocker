@@ -17,14 +17,20 @@ RUN apk add bash  git openssh \
 
 ### install composer
 RUN php -r "copy('https://install.phpcomposer.com/installer', 'composer-setup.php');"
-RUN  php composer-setup.php \
-     php -r "unlink('composer-setup.php');"
+RUN php composer-setup.php
+RUN php -r "unlink('composer-setup.php');"
+RUN mv composer.phar /usr/local/bin/composer
 
 ARG COMPOSER_PUID=1000
 ARG COMPOSER_PGID=1000
 
 RUN addgroup -g ${COMPOSER_PGID} composer
 RUN adduser -u ${COMPOSER_PUID} -D -G composer composer
+
+RUN if [ ${USE_CHINA_PROXY} = True ]; then \
+    composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/ \
+;fi
+
 
 ### install gd
 ARG INSTALL_GD=False
