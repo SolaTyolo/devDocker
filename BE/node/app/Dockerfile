@@ -10,8 +10,10 @@ RUN if [ ${USE_CHINA_PROXY} = True ]; then \
 
 ### install php base extension
 ### linux-headers is for grpc
-RUN apk add bash  git openssh \
-        gcc g++ autoconf make 
+ENV PYTHONUNBUFFERED=1
+
+RUN apk add  --virtual .gyp  g++  make python3
+RUN apk add  bash  git openssh  autoconf  py3-pip
 
 # clean cache
 RUN rm /var/cache/apk/*

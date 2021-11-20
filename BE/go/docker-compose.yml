@@ -10,6 +10,8 @@ services:
         volumes:
             - ${APPLICATION_HOME}:/go/src
             - ${SSH_CONFIG}:/root/.ssh
+        ports:
+            - "8080:8080"
         networks:
             - backend
 
