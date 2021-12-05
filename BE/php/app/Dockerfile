@@ -41,6 +41,7 @@ RUN if [ ${INSTALL_GD} = True ]; then \
         libpng-dev \
         libjpeg-turbo \
         libjpeg-turbo-dev \
+        libmemcached-dev \
     && docker-php-ext-configure gd \
         --with-jpeg-dir=/usr/include/ \
         --with-freetype-dir=/usr/include/ \
@@ -58,6 +59,23 @@ RUN if [ ${INSTALL_REDIS} = True ]; then \
     pecl install redis-${REDIS_VERSION} \
     && docker-php-ext-enable redis \
 ;fi
+
+### install memcached
+ARG INSTALL_MEMCACHED=False
+ARG MEMCACHED_VERSION=5.1.1
+RUN if [ ${INSTALL_MEMCACHED} = True ]; then \
+    pecl install memcached-${MEMCACHED_VERSION} \
+    && docker-php-ext-enable memcached \
+;fi
+
+
+### install yac 
+ARG INSTALL_YAC=False
+RUN if [ ${INSTALL_YAC} = True ]; then \
+    pecl install yac \
+    && docker-php-ext-enable yac  \
+;fi
+
 
 ### install xdebug 
 ARG INSTALL_XDEBUG=False

@@ -11,7 +11,10 @@ services:
                 - INSTALL_GD=${INSTALL_GD}
                 - INSTALL_XDEBUG=${INSTALL_XDEBUG}
                 - XDEBUG_VERSION=${XDEBUG_VERSION}
+                - MEMCACHED_VERSION=${MEMCACHED_VERSION}
                 - REDIS_VERSION=${REDIS_VERSION}
+                - INSTALL_MEMCACHED=${INSTALL_MEMCACHED}
+                - INSTALL_YAC=${INSTALL_YAC}
                 - USE_CHINA_PROXY=${USE_CHINA_PROXY}
         volumes:
             - ${APPLICATION_HOME}:/var/www
