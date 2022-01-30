@@ -6,11 +6,11 @@ MAKEFLAGS+=-r
 
 default: 
 	@echo run adminer and mysql
-	docker-compose up -d mysql
+	docker-compose up -d
 
 dev:
-	@echo run adminer and $(DB)
-	docker-compose up -d $(DB)
+	@echo run 
+	docker-compose run --rm  frontend sh
 
 .PHONY: clean build
 

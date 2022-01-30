@@ -35,13 +35,13 @@ RUN if [ ${USE_CHINA_PROXY} = True ]; then \
 ### install gd
 ARG INSTALL_GD=False
 RUN if [ ${INSTALL_GD} = True ]; then \
-   apk add freetype \
+   apk add --update --no-cache\
+        freetype \
         freetype-dev \
         libpng \
         libpng-dev \
         libjpeg-turbo \
         libjpeg-turbo-dev \
-        libmemcached-dev \
     && docker-php-ext-configure gd \
         --with-jpeg-dir=/usr/include/ \
         --with-freetype-dir=/usr/include/ \
@@ -64,8 +64,11 @@ RUN if [ ${INSTALL_REDIS} = True ]; then \
 ARG INSTALL_MEMCACHED=False
 ARG MEMCACHED_VERSION=5.1.1
 RUN if [ ${INSTALL_MEMCACHED} = True ]; then \
-    pecl install memcached-${MEMCACHED_VERSION} \
-    && docker-php-ext-enable memcached \
+    apk add --update --no-cache\
+        libmemcached-dev \
+    && pecl install igbinary \
+    && pecl install  memcached-${MEMCACHED_VERSION} \
+    && docker-php-ext-enable igbinary memcached \
 ;fi
 
 
